@@ -36,7 +36,6 @@ public:
 	Map(int p);//带有位置信息的，用于读取存档
 	~Map();
 
-
 	void ShowWorldMap();
 	void GenerateCell(Cell cell);
 };
