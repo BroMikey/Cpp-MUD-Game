@@ -1,20 +1,43 @@
-
-
-
 #include "Map.h"
 #include <iostream>
 #include <Windows.h>
 #include <conio.h>
 
+void Cell::SetEventMessage(string message) {
+    this->eventMessage = message;
+}
+
+Cell::Cell() {
+
+}
+
+/// <summary>
+/// 用于根据NPC初始化cell
+/// </summary>
+Cell::Cell(vector<NPC>npcs) {
+    for (auto oneNPC:npcs) {
+        this->AddNPC(oneNPC);
+    }
+}
+
+Cell::~Cell() {
+
+}
+
+void Cell::AddNPC(NPC n) {
+    this->NPCs.push_back(n);
+}
+
 Map::Map() {
     // 初始化特定位置的事件消息
-    Place1.SetEventMessage("你到了北俱芦州！");
-    Place2.SetEventMessage("你到了南赡部州！");
-    Place3.SetEventMessage("你到了花果山！");
-    Place4.SetEventMessage("你到了东海龙宫！");
-    Place5.SetEventMessage("你到了南海龙宫！");
-    Place5.SetEventMessage("你到了东胜神州！");
-    Place5.SetEventMessage("你到了西牛贺州！");
+    cellXi.SetEventMessage("你到了西牛贺州！");
+    cellNanS.SetEventMessage("你到了南赡部州！");
+    cellNanH.SetEventMessage("你到了南海龙宫！");
+    cellBei.SetEventMessage("你到了北俱芦州！");
+    cellDongH.SetEventMessage("你到了东海龙宫！");
+    cellDongS.SetEventMessage("你到了东胜神州！");
+    cellHua.SetEventMessage("你到了花果山！");
+    cellHua.AddNPC(NPC("土地"));
 }
 
 Map::Map(int pX, int pY) {
@@ -32,6 +55,7 @@ void Map::GotoXY(int x, int y) {
 }
 
 void Map::GenerateCell(Cell cell) {
+    system("cls");
 	cout << "  ___________" << endl;
 	for (int i = 0; i < cell.NPCs.size(); i++) {
 		cout << " |" << i << "." << cell.NPCs[i].name << "\t " << endl;
@@ -83,10 +107,30 @@ void Map::UpdataPos(char move) {
     cout << map[playerY][playerX];
 
     switch (move) {
-    case 'w': if (playerY > 0 && map[playerY - 1][playerX] != '_' && map[playerY - 1][playerX] != '|' && map[playerY - 1][playerX] == ' ') playerY--; break; // 向上移动
-    case 's': if (playerY < map.size() - 1 && map[playerY + 1][playerX] != '_' && map[playerY + 1][playerX] != '|' && map[playerY + 1][playerX] == ' ') playerY++; break; // 向下移动
-    case 'a': if (playerX > 0 && map[playerY][playerX - 1] != '|' && map[playerY][playerX - 1] != '_' && map[playerY][playerX - 1] == ' ') playerX--; break; // 向左移动
-    case 'd': if (playerX < map[0].size() - 1 && map[playerY][playerX + 1] != '|' && map[playerY][playerX + 1] != '_' && map[playerY][playerX + 1] == ' ') playerX++; break; // 向右移动
+    case 'w': if (playerY > 0 &&
+        map[playerY - 1][playerX] != '_' &&
+        map[playerY - 1][playerX] != '|' && 
+        map[playerY - 1][playerX] == ' ' ||
+        map[playerY - 1][playerX] == '*')
+            playerY--; break; // 向上移动
+    case 's': if (playerY < map.size() - 1 && 
+        map[playerY + 1][playerX] != '_' && 
+        map[playerY + 1][playerX] != '|' && 
+        map[playerY + 1][playerX] == ' ' || 
+        map[playerY + 1][playerX] == '*')
+            playerY++; break; // 向下移动
+    case 'a': if (playerX > 0 && 
+        map[playerY][playerX - 1] != '|' && 
+        map[playerY][playerX - 1] != '_' && 
+        map[playerY][playerX - 1] == ' ' || 
+        map[playerY][playerX - 1] == '*')
+            playerX--; break; // 向左移动
+    case 'd': if (playerX < map[0].size() - 1 && 
+        map[playerY][playerX + 1] != '|' &&
+        map[playerY][playerX + 1] != '_' && 
+        map[playerY][playerX + 1] == ' ' || 
+        map[playerY][playerX + 1] == '*')
+            playerX++; break; // 向右移动
     }
 
     // 显示新位置
@@ -96,26 +140,50 @@ void Map::UpdataPos(char move) {
 
 void Map::CheckPos() {
     // 根据当前位置触发不同的事件
-    if (playerX >= 8 && playerY <= 12 && playerY <= 7 && playerX >= 12) {
-        ShowMessage(Place1.eventMessage);
+    if (playerX == 14 && playerY == 10) {
+        system("cls");
+        ShowMessage(cellXi.eventMessage);
+        GenerateCell(cellXi);
     }
-    else if (playerX == 25 && playerY == 8) {
-        ShowMessage(Place2.eventMessage);
+    else if (playerX == 51 && playerY == 12) {
+        system("cls");
+        ShowMessage(cellHua.eventMessage);
+        GenerateCell(cellHua);
     }
-    else if (playerX == 38 && playerY == 10) {
-        ShowMessage(Place3.eventMessage);
+    else if (playerX == 30 && playerY == 9) {
+        system("cls");
+        ShowMessage(cellNanS.eventMessage);
+        GenerateCell(cellNanS);
     }
-    else if (playerX == 32 && playerY == 7) {
-        ShowMessage(Place4.eventMessage);
+    else if (playerX == 30 && playerY == 16) {
+        system("cls");
+        ShowMessage(cellNanH.eventMessage);
+        GenerateCell(cellNanH);
     }
-    else if (playerX == 29 && playerY == 16) {
-        ShowMessage(Place5.eventMessage);
+    else if (playerX == 30 && playerY == 3) {
+        system("cls");
+        ShowMessage(cellBei.eventMessage);
+        GenerateCell(cellBei);
+    }
+    else if (playerX == 48 && playerY == 8) {
+        system("cls");
+        ShowMessage(cellDongH.eventMessage);
+        GenerateCell(cellDongH);
+    }
+    
+    else if (playerX == 56 && playerY == 10) {
+        system("cls");
+        ShowMessage(cellDongS.eventMessage);
+        GenerateCell(cellDongS);
     }
 }
 
 void Map::ShowMessage(string message) {
-    GotoXY(0, map.size() + 1);  // 将光标移动到地图下方，显示消息
+
     cout << message << endl;
-    system("pause");  // 暂停，等待用户按键
+
+    Sleep(1000);
+    //此处为退出地图程序进入cell
+
 }
 
